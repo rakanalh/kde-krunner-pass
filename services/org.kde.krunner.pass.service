@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.kde.krunner.pass
+Exec=/usr/bin/kde-pass-runner.py 

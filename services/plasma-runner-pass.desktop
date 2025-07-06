@@ -1,0 +1,31 @@
+[Desktop Entry]
+Name=Pass Password Manager
+Name[de]=Pass Passwort-Manager
+Name[es]=Gestor de contraseñas Pass
+Name[fr]=Gestionnaire de mots de passe Pass
+Name[it]=Gestore password Pass
+Name[pt]=Gestor de senhas Pass
+Comment=Search and access passwords from the standard Unix password manager
+Comment[de]=Suchen und Zugriff auf Passwörter aus dem Standard-Unix-Passwort-Manager
+Comment[es]=Buscar y acceder a contraseñas desde el gestor de contraseñas estándar de Unix
+Comment[fr]=Rechercher et accéder aux mots de passe du gestionnaire de mots de passe Unix standard
+Comment[it]=Cerca e accedi alle password dal gestore password Unix standard
+Comment[pt]=Pesquisar e acessar senhas do gerenciador de senhas Unix padrão
+
+Type=Service
+Icon=dialog-password
+X-KDE-ServiceTypes=Plasma/Runner
+X-KDE-PluginInfo-Author=KDE Pass Runner Team
+X-KDE-PluginInfo-Email=
+X-KDE-PluginInfo-Name=pass
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-License=GPL-3.0
+X-KDE-PluginInfo-EnabledByDefault=true
+
+X-Plasma-API=DBus
+X-Plasma-DBusRunner-Service=org.kde.krunner.pass
+X-Plasma-DBusRunner-Path=/runner
+X-Plasma-Request-Actions-Once=true
+X-Plasma-Runner-Min-Letter-Count=4
+X-Plasma-Runner-Syntaxes=pass :q:
+X-Plasma-Runner-Syntax-Descriptions=Search passwords: 'pass' for all passwords, 'pass search-term' to filter 
