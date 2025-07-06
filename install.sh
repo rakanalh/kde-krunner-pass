@@ -51,13 +51,42 @@ if ! python3 -c "from gi.repository import GLib" 2>/dev/null; then
     exit 1
 fi
 
+# Detect session type
+SESSION_TYPE="${XDG_SESSION_TYPE:-unknown}"
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    DISPLAY_SERVER="wayland"
+elif [ -n "$DISPLAY" ]; then
+    DISPLAY_SERVER="x11"
+else
+    DISPLAY_SERVER="unknown"
+fi
+
 # Check optional dependencies
-if ! command -v xdotool &> /dev/null; then
-    echo "⚠️  Warning: 'xdotool' is not installed (auto-typing will not work)"
-    echo "   Install it for auto-typing functionality:"
-    echo "   - Debian/Ubuntu: sudo apt install xdotool"
-    echo "   - Fedora: sudo dnf install xdotool"
-    echo "   - Arch: sudo pacman -S xdotool"
+echo "Checking auto-typing dependencies..."
+
+if [ "$DISPLAY_SERVER" = "x11" ]; then
+    if ! command -v xdotool &> /dev/null; then
+        echo "⚠️  Warning: 'xdotool' is not installed (auto-typing will not work on X11)"
+        echo "   Install it for auto-typing functionality on X11:"
+        echo "   - Debian/Ubuntu: sudo apt install xdotool"
+        echo "   - Fedora: sudo dnf install xdotool"
+        echo "   - Arch: sudo pacman -S xdotool"
+    else
+        echo "✅ xdotool found (X11 auto-typing support available)"
+    fi
+elif [ "$DISPLAY_SERVER" = "wayland" ]; then
+    if ! command -v wtype &> /dev/null; then
+        echo "⚠️  Warning: 'wtype' is not installed (auto-typing will not work on Wayland)"
+        echo "   Install it for auto-typing functionality on Wayland:"
+        echo "   - Fedora: sudo dnf install wtype"
+        echo "   - Arch: sudo pacman -S wtype"
+        echo "   - Other: Build from source: https://github.com/atx/wtype"
+    else
+        echo "✅ wtype found (Wayland auto-typing support available)"
+    fi
+else
+    echo "⚠️  Warning: Could not determine display server type"
+    echo "   Auto-typing support will be determined at runtime"
 fi
 
 if ! command -v notify-send &> /dev/null; then
@@ -121,7 +150,13 @@ echo "  1. Press Alt+F2 or Alt+Space to open KRunner"
 echo "  2. Type 'pass' to see all passwords"
 echo "  3. Type 'pass search-term' to filter passwords"
 echo "  4. Press Enter to copy password to clipboard"
-echo "  5. Press Ctrl+Enter to auto-type password (requires xdotool)"
+if [ "$DISPLAY_SERVER" = "x11" ]; then
+    echo "  5. Press Ctrl+Enter to auto-type password (requires xdotool)"
+elif [ "$DISPLAY_SERVER" = "wayland" ]; then
+    echo "  5. Press Ctrl+Enter to auto-type password (requires wtype)"
+else
+    echo "  5. Press Ctrl+Enter to auto-type password (requires xdotool for X11 or wtype for Wayland)"
+fi
 echo ""
 echo "To uninstall:"
 echo "  rm '$INSTALL_PREFIX/bin/kde-pass-runner.py'"
